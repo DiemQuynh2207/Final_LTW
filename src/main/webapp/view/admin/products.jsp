@@ -739,13 +739,13 @@ input[type="file"] {
 					<table id="table-product">
 						<thead>
 							<tr>
-								<th>ID</th>
-                                <th>Image_URL</th>
-                                <th>CategoryID</th>
-								<th>SupplierID</th>
-                                <th>PName</th>
+								<th>PID</th>
+                                <th>Image</th>
+                                <th>CID</th>
+								<th>SID</th>
+                                <th>Name</th>
 								<th>Price</th>
-                                <th>Pdescription</th>
+                                <th>Description</th>
                                 <th>Stock</th>
 							</tr>
 						</thead>
@@ -768,8 +768,8 @@ input[type="file"] {
 	                                <td>${prod.description }</td>
 	                                <td>${prod.stock }</td>
 	                                <td>
-	                                    <i class='bx bx-edit' id="btn-edit"></i>
-	                                    <i class='bx bx-x-circle'></i>
+	                                    <a href="<c:url value='/admin/product/edit?id=${prod.productId}'/>"><i class='bx bx-edit' id="btn-edit"></i></a>
+	                                    <a href="<c:url value='/admin/product/delete?id=${prod.productId}'/>"><i class='bx bx-x-circle'></i></a>
 	                                </td>
 								</tr>
 							</c:forEach>
@@ -786,42 +786,50 @@ input[type="file"] {
         <div class="left">
             <div class="left-modal">
             <h2>Thêm sản phẩm</h2>
-                <form action="" class="form-fill-info" method="POST">
+                <form action="products/add" class="form-fill-info" method="POST" enctype="multipart/form-data">
+                    <!-- <div class="info-product">
+                        <span>Product ID</span>
+                        <input type="text" placeholder="VD: Gundam RX79" name="productId" required>
+                    </div> -->
                     <div class="info-product">
-                        <span>Tên Sản Phẩm</span>
-                        <input type="text" placeholder="VD: Gundam RX79" name="productName" required>
+                        <span>Category ID</span>
+                        <input type="text" placeholder="Nhập giá" name="categoryId" required>
                     </div>
                     <div class="info-product">
-                        <span>Giá thành</span>
-                        <input type="text" placeholder="Nhập giá" name="productPrice" required>
+                        <span>Supplier ID</span>
+                        <input type="text" placeholder="Nhập số lượng" name="supplierId" required>
+                    </div>
+                    <div class="info-product">
+                        <span>Tên</span>
+                        <input type="text" placeholder="Nhập số lượng" name="pname" required>
+                    </div>
+                    <div class="info-product">
+                        <span>Giá</span>
+                        <input type="text" placeholder="Nhập số lượng" name="price" required>
+                    </div>
+                    <div class="info-product">
+                        <span>Description</span>
+                        <input type="text" placeholder="Nhập số lượng" name="description" required>
                     </div>
                     <div class="info-product">
                         <span>Số lượng</span>
-                        <input type="text" placeholder="Nhập số lượng" name="productAmount" required>
+                        <input type="text" placeholder="Nhập số lượng" name="stock" required>
                     </div>
                     <div class="info-product">
-                        <span>Loại</span>
-                        <select name="productCategory" id="productCategory">
-                            <option value="mg">MG</option>
-                            <option value="fullmechanics">Full Mechanics</option>
-                            <option value="rg">RG</option>
-                        </select>
+                        <div class="upload-container">
+		                    <label for="image-upload" class="upload-label">
+		                        <span>Upload Image</span>
+		                        <input type="file" id="image-upload" name="image" accept="image/*">
+		                    </label>
+		                    <div class="preview-container">
+		                        <img id="image-preview" src="" alt="Image preview" class="hidden">
+		                    </div>
+		                </div>
                     </div>
                     <div class="btn-confirm-info">
                         <input type="submit" value="Add">
                     </div>
                 </form>
-            </div>
-            <div class="right-modal">
-                <div class="upload-container">
-                    <label for="image-upload" class="upload-label">
-                        <span>Upload Image</span>
-                        <input type="file" id="image-upload" name="image" accept="image/*">
-                    </label>
-                    <div class="preview-container">
-                        <img id="image-preview" src="" alt="Image preview" class="hidden">
-                    </div>
-                </div>
             </div>
         </div>
         </div>
@@ -854,71 +862,7 @@ input[type="file"] {
 
 
     <script>
-        console.log("Table 1");
-        let table_product = document.getElementById("table-product");
-        async function loadProductAdmin() {
-    
-            console.log("Product run");
-            const response = await fetch("../html/test.json");
-            const products = await response.json();
-            console.log("Product:", products);
-            // Create a tbody element once
-            const tbody = document.createElement('tbody');
         
-            // Loop through the products and create rows
-            products.forEach(function(product) {
-                console.log("Product:", product);
-        
-                const tr = document.createElement('tr');
-        
-                // Create and populate the cells for each product
-                const tdId = document.createElement('td');
-                tdId.textContent = product.productId;
-        
-                const tdImage = document.createElement('td');
-                const cardImg = document.createElement('img');
-                cardImg.src = product.productImage;
-                cardImg.alt = '';
-                tdImage.appendChild(cardImg);
-        
-                const tdName = document.createElement('td');
-                tdName.textContent = product.productName;
-        
-                const tdType = document.createElement('td');
-                tdType.innerHTML = `<span class="type ${product.productCategoryName}">${product.productCategoryName}</span>`;
-        
-                const tdPrice = document.createElement('td');
-                tdPrice.textContent = product.productPrice;
-        
-                const tdAmount = document.createElement('td');
-                tdAmount.textContent = product.productAmount;
-        
-                const tdRating = document.createElement('td');
-                tdRating.textContent = product.avgRating;
-        
-                const tdAction = document.createElement('td');
-                tdAction.innerHTML = `<i class='bx bx-edit' id="btn-edit"></i><i class='bx bx-x-circle'></i>`;
-        
-                // Append all cells to the row
-                tr.appendChild(tdId);
-                tr.appendChild(tdImage);
-                tr.appendChild(tdName);
-                tr.appendChild(tdType);
-                tr.appendChild(tdPrice);
-                tr.appendChild(tdAmount);
-                tr.appendChild(tdRating);
-                tr.appendChild(tdAction);
-        
-                // Append the row to the tbody
-                tbody.appendChild(tr);
-            });
-        
-            // Once all rows are appended, append tbody to the table
-            table_product.appendChild(tbody);
-        }
-        
-        // Call the function to load the product data
-        loadProductAdmin();
         const allSlideMenu = document.querySelectorAll('#sidebar .side-menu.top li a')
         allSlideMenu.forEach(item => {
             const li = item.parentElement;
