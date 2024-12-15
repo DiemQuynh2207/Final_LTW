@@ -1,11 +1,13 @@
 package com.webapp3rdyear.service.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.webapp3rdyear.dao.IProductDao;
 import com.webapp3rdyear.dao.impl.ProductDaoImpl;
 import com.webapp3rdyear.enity.Products;
 import com.webapp3rdyear.service.IProductService;
+import org.springframework.data.domain.Page;
 
 public class ProductServiceImpl implements IProductService{
 
@@ -69,6 +71,11 @@ public class ProductServiceImpl implements IProductService{
 	public int count() {
 		// TODO Auto-generated method stub
 		return ipdao.count();
+	}
+
+	@Override
+	public Page<Products> filterProducts(String pname, BigDecimal minPrice, BigDecimal maxPrice, Integer categoryId, String sortByName, String sortByPrice, int page, int size) {
+		return ipdao.filterProducts(pname, minPrice, maxPrice, categoryId, sortByName, sortByPrice, page, size);
 	}
 
 }

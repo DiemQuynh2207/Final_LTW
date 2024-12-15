@@ -1,5 +1,7 @@
 package com.webapp3rdyear.dao.impl;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.webapp3rdyear.config.JPAConfig;
@@ -10,6 +12,13 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 public class ProductDaoImpl implements IProductDao{
 
@@ -126,5 +135,63 @@ public class ProductDaoImpl implements IProductDao{
 		Query query = enma.createQuery(jpql);
 		return ((Long)query.getSingleResult()).intValue();
 	}
+
+	@Override
+	public Page<Products> filterProducts(String pname, BigDecimal minPrice, BigDecimal maxPrice, Integer categoryId, String sortByName, String sortByPrice, int page, int size) {
+		EntityManager enma = JPAConfig.getEntityManager();
+
+		CriteriaBuilder cb = enma.getCriteriaBuilder();
+		CriteriaQuery<Products> cq = cb.createQuery(Products.class);
+		Root<Products> productRoot = cq.from(Products.class);
+
+		List<Predicate> predicates = new ArrayList<>();
+
+		if (pname != null && !pname.isEmpty()) {
+			predicates.add(cb.like(productRoot.get("pname"), "%" + pname + "%"));
+		}
+		if (minPrice != null) {
+			predicates.add(cb.greaterThanOrEqualTo(productRoot.get("price"), minPrice));
+		}
+		if (maxPrice != null) {
+			predicates.add(cb.lessThanOrEqualTo(productRoot.get("price"), maxPrice));
+		}
+		if (categoryId != null) {
+			predicates.add(cb.equal(productRoot.get("categoryID"), categoryId));
+		}
+
+		cq.where(predicates.toArray(new Predicate[0]));
+
+		if ("asc".equals(sortByPrice)) {
+			cq.orderBy(cb.asc(productRoot.get("price")));
+		} else if ("desc".equals(sortByPrice)) {
+			cq.orderBy(cb.desc(productRoot.get("price")));
+		}
+
+		if ("asc".equals(sortByName)) {
+			cq.orderBy(cb.asc(productRoot.get("pname")));
+		} else if ("desc".equals(sortByName)) {
+			cq.orderBy(cb.desc(productRoot.get("pname")));
+		}
+
+		Query query = enma.createQuery(cq);
+
+		query.setFirstResult(page * size);
+		query.setMaxResults(size);
+
+		List<Products> products = query.getResultList();
+
+		CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
+		Root<Products> countRoot = countQuery.from(Products.class);
+		countQuery.select(cb.count(countRoot));
+
+		Query countQ = enma.createQuery(countQuery);
+		long totalRecords = (long) countQ.getSingleResult();
+
+		enma.close();
+
+		return new PageImpl<>(products, PageRequest.of(page, size), totalRecords);
+
+	}
+
 
 }
