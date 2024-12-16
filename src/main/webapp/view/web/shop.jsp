@@ -1,5 +1,7 @@
+<%@ page import="com.webapp3rdyear.enity.Cart" %>
+<%@ page import="java.util.List" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+         pageEncoding="UTF-8"%>
     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
     <!DOCTYPE html>
@@ -315,45 +317,69 @@
         <!-- Modal content -->
         <div class="modal-content">
             <span class="close-add">&times;</span>
-            <div class="shopping-cart" id="shopping-cart">
-                <!-- Title -->
-                <div class="title">
-                Shopping Bag
+            <form action="<%= request.getContextPath() %>/user/checkout" method="get">
+                <div class="shopping-cart" id="shopping-cart">
+                    <!-- Title -->
+                    <div class="title">
+                        Shopping Bag
+                    </div>
+
+                    <%
+                        List<Cart> carts = (List<Cart>) request.getAttribute("cartList"); // Assume this is passed from the controller
+                        if (carts != null && !carts.isEmpty()) {
+                            for (Cart cart : carts) {
+                    %>
+                    <div class="item" style="display: flex; align-items: center; justify-content: space-between;">
+                        <input type="checkbox" name="selectedProductIds"
+                               value="<%= cart.getProductID().getProductId() %>"
+                               class="select-item" style="width: 20px; height: 20px;" />
+
+                        <div class="image" style="width: 100px; height: 100px; margin: auto;">
+                            <img src="<%= cart.getProductID().getImage() %>" alt="Ảnh sản phẩm" style="width: 100%; height: 100%; object-fit: cover;" />
+                        </div>
+
+                        <div class="description" style="text-align: center; margin: auto;">
+                            <span><%= cart.getProductID().getPname() %></span>
+                        </div>
+
+                        <div class="quantity" style="text-align: center; margin: auto;">
+                            <a href="<%= request.getContextPath() %>/user/cart/dec?productId=<%= cart.getProductID().getProductId() %>"
+                               class="plus-btn"
+                               style="text-decoration: none; color: inherit;">
+                                <i class="fa-solid fa-minus"></i>
+                            </a>
+                            <input type="text" name="quantity" value="<%= cart.getQuantity() %>" readonly style="text-align: center; width: 50px;">
+                            <a href="<%= request.getContextPath() %>/user/cart/add?productId=<%= cart.getProductID().getProductId() %>"
+                               class="minus-btn"
+                               style="text-decoration: none; color: inherit;">
+                                <i class="fa-solid fa-plus"></i>
+                            </a>
+                        </div>
+
+                        <div class="total-price" style="text-align: center; margin: auto;"><%= cart.getProductID().getPrice() %> vnđ</div>
+
+                        <div class="actions" style="text-align: center; margin: auto;">
+                            <a href="<%= request.getContextPath() %>/user/cart/delete?productId=<%= cart.getProductID().getProductId() %>"
+                               class="close-add" style="font-size: 24px; font-weight: bold;">&times;</a>
+                        </div>
+                    </div>
+                    <%
+                        }
+                    } else {
+                    %>
+                    <div class="empty-cart" style="text-align: center; padding: 20px;">
+                        Your cart is empty.
+                    </div>
+                    <%
+                        }
+                    %>
                 </div>
-        
-                <!-- Product #1 -->
-                <div class="item">
-                <div class="buttons">
-                    <span class="delete-btn"></span>
-                    <span class="like-btn"></span>
+
+                <!-- Checkout button -->
+                <div class="checkout-button" style="text-align: center; margin-top: 20px;">
+                    <button type="submit" class="btn-purchase" style="display: none;">Checkout</button>
                 </div>
-        
-                <div class="image">
-                    <img src="item-1.png" alt="" />
-                </div>
-        
-                <div class="description">
-                    <span>Gundam X</span>
-                </div>
-        
-                <div class="quantity">
-                    <button class="plus-btn" type="button" name="button">
-                    <i class="fa-solid fa-minus"></i>
-                    </button>
-                    <input type="text" name="name" value="1">
-                    <button class="minus-btn" type="button" name="button">
-                    <i class="fa-solid fa-plus"></i>
-                    </button>
-                </div>
-        
-                <div class="total-price">$549</div>
-                </div>
-        
-          </div>
-          <div class="total">
-            <div class="total-price-end">Total: $1789</div>
-            <button class="btn-purchase">Purchase</button>
-          </div>
+            </form>
         </div>
     </div>
 	<style>
@@ -939,12 +965,14 @@ svg {
 
 /* Modal Content */
 .modal-content {
-  background-color: #fefefe;
-  margin: auto;
-  margin-left: 300px;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 75%;
+    width: 1050px; /* Tăng chiều rộng */
+    height: 550px; /* Tăng chiều cao */
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 8px;
+    background-color: #fefefe;
+    position: relative;
 }
 
 /* The Close Button */
@@ -1068,16 +1096,15 @@ input[type="file"] {
 
 
 .shopping-cart {
-  width: 750px;
-  height: 423px;
-  margin: 80px auto;
-  background: #FFFFFF;
-  box-shadow: 1px 2px 3px 0px rgba(0,0,0,0.10);
-  border-radius: 6px;
-
-
-  display: flex;
-  flex-direction: column;
+    width: 950px; /* Tăng chiều rộng */
+    height: 450px; /* Tăng chiều cao */
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 8px;
+    background-color: #fefefe;
+    position: relative;
+    overflow-y: auto; /* Để cuộn nếu nội dung dài */
 }
 
 
@@ -1602,6 +1629,25 @@ input[type="file"] {
     	loadProduct()
 
 
+    </script>
+    <script>
+        // JavaScript to toggle visibility of the "Checkout" button
+        document.addEventListener("DOMContentLoaded", function () {
+            const checkboxes = document.querySelectorAll('.select-item'); // Select all product checkboxes
+            const checkoutButton = document.querySelector('.btn-purchase'); // The Checkout button
+
+            function toggleCheckoutButton() {
+                // Check if at least one checkbox is ticked
+                const isAnyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+                // Show or hide the Checkout button
+                checkoutButton.style.display = isAnyChecked ? "block" : "none";
+            }
+
+            // Add event listener to each checkbox
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', toggleCheckoutButton);
+            });
+        });
     </script>
 </body>
 </html>

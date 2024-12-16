@@ -17,7 +17,8 @@ public class CartDaoImpl implements ICartDao {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            entityManager.persist(cart);
+            Cart cart1 = entityManager.merge(cart);
+            entityManager.persist(cart1);
             transaction.commit();
         }catch (Exception e) {
             transaction.rollback();
@@ -53,7 +54,8 @@ public class CartDaoImpl implements ICartDao {
         try {
             transaction.begin();
             if (cart != null) {
-                entityManager.remove(cart);
+                Cart cart1 = entityManager.merge(cart);
+                entityManager.remove(cart1);
             }
             else {
                 throw new Exception("Cart is null");

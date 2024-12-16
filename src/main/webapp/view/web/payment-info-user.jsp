@@ -1,5 +1,8 @@
+<%@ page import="com.webapp3rdyear.enity.Cart" %>
+<%@ page import="java.math.BigDecimal" %>
+<%@ page import="java.util.List" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+         pageEncoding="UTF-8"%>
     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <!DOCTYPE html>
@@ -80,8 +83,8 @@
                                 <input type="submit" value="Submit">
                             </div>
                         </form>
-                        
-                        
+
+
                     </div>
                     <div class="right">
                         <div class="header-right">
@@ -91,36 +94,43 @@
                             </div>
                         </div>
                         <div class="box-product-buy">
-                            <div class="detail-product-buy">
-                                <div class="left-detail-product-buy">
-                                    <div class="img-product-buy">
-                                        <img src="/frontend/img/s1.jpg" alt="">
+                            <%
+                                List<Cart> cartList = (List<Cart>) request.getAttribute("cartList");
+                                BigDecimal totalOfCart = (BigDecimal) request.getAttribute("totalOfCart");
+
+                                if (cartList != null && !cartList.isEmpty()) {
+                                    for (Cart cart : cartList) {
+                            %>
+                            <div class="box-product-buy">
+                                <div class="detail-product-buy">
+                                    <div class="left-detail-product-buy">
+                                        <div class="img-product-buy">
+                                            <img src="<%= cart.getProductID().getImage() %>" alt="Product Image">
+                                        </div>
+                                        <div class="info-product-buy">
+                                            <h3><%= cart.getProductID().getPname() %></h3>
+                                            <p><%= cart.getProductID().getPrice() %> vnđ</p>
+                                            <p>Số lượng: <%= cart.getQuantity() %></p>
+                                        </div>
                                     </div>
-                                    <div class="info-product-buy">
-                                        <h3>Product Name</h3>
-                                        <p>100.000</p>
-                                        <p>Số lượng: 1</p>
+                                    <div class="last-price">
+                                        <p><%= cart.getProductID().getPrice().multiply(new BigDecimal(cart.getQuantity())) %> vnđ</p>
                                     </div>
-                                </div>
-                                <div class="last-price">
-                                    <p>100.000</p>
                                 </div>
                             </div>
-                            <div class="detail-product-buy">
-                                <div class="left-detail-product-buy">
-                                    <div class="img-product-buy">
-                                        <img src="/frontend/img/s1.jpg" alt="">
-                                    </div>
-                                    <div class="info-product-buy">
-                                        <h3>Product Name</h3>
-                                        <p>100.000</p>
-                                        <p>Số lượng: 1</p>
-                                    </div>
-                                </div>
-                                <div class="last-price">
-                                    <p>100.000</p>
-                                </div>
-                            </div>
+                            <%
+                                }
+                            } else {
+                            %>
+                            <p>Không có sản phẩm nào trong giỏ hàng.</p>
+                            <%
+                                }
+                            %>
+                        </div>
+
+                        <!-- Tổng giá trị đơn hàng -->
+                        <div class="total-box">
+                            <h3>Tổng cộng: <%= totalOfCart != null ? totalOfCart : "0" %> vnđ</h3>
                         </div>
                         <div class="btn-confirm-product">
                             <input type="text" placeholder="Mã giảm giá" id="" name="discount">
@@ -131,7 +141,7 @@
             </div>
         </div>
     </section>
-    
+
     <style>
 		    @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 		@import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');

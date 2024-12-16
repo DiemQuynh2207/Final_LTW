@@ -27,7 +27,7 @@ public class CartServiceImpl implements ICartService {
 
     @Override
     public void updateCart(Cart cart) {
-        if (cartDao.getCartByCustomerIDAndProductID(cart.getCustomerID().getUserId(),cart.getProductID().getProductId()) == null) {
+        if (cartDao.getCartByCustomerIDAndProductID(cart.getCustomerID().getUserId(),cart.getProductID().getProductId()) != null) {
             cartDao.updateCart(cart);
         }
     }

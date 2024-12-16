@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Entity
-@Table(name = "Reivew")
+@Table(name = "Review")
 @NamedQuery(name = "Review.findAll", query = "SELECT re FROM Review re")
 public class Review implements Serializable {
 
@@ -25,8 +25,8 @@ public class Review implements Serializable {
     @JoinColumn(name = "ProductID")
     private Products ProductID;
 
-    @Column(name = "Quantity", columnDefinition = "Int")
-    private int quantity;
+    @Column(name = "Rating", columnDefinition = "Int")
+    private int rating;
 
     @Column(name = "Content", columnDefinition = "LONGTEXT NULL")
     private String content;
