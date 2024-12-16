@@ -10,6 +10,7 @@ import com.webapp3rdyear.enity.Orders;
 import com.webapp3rdyear.enity.model.OrderModel;
 import com.webapp3rdyear.service.IOrderService;
 
+import java.util.Collections;
 import java.util.List;
 
 public class OrderSeviceImpl implements IOrderService {
@@ -18,8 +19,12 @@ public class OrderSeviceImpl implements IOrderService {
     IUserDao userDao = new UserDaoImpl();
 
     public List<Orders> findByUserID(int userId) {
+    	System.out.println("id trong findbyuserid" + userId);
+    	if (orderDao.findByUserId(userId) == null) {
+    	    return Collections.emptyList(); // Return empty list if null
+    	}
         return orderDao.findByUserId(userId).stream().sorted((o1, o2) -> o2.getOrderId() - o1.getOrderId()).toList();
-    }
+    } 	
 
     public void addOrder(OrderModel order) {
         Orders orders = new Orders();

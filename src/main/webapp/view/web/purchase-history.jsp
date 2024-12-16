@@ -108,25 +108,31 @@
 					<table id="table-product">
 						<thead>
 							<tr>
-								<th>ID</th>
-                                <th>Product Image</th>
-								<th>Product Name</th>
-                                <th>Type</th>
-								<th>Price</th>
-                                <th>Amount</th>
+								<th>OrderID</th>
+                                <th>CustomerID</th>
+                                <th>Order Date</th>
+                                <th>Voucher</th>
+                                <th>Seller</th>
+                                <th>Shipper</th>
+								<th>Dis Price</th>
+								<th>Total</th>
+								<th>Status</th>
 							</tr>
 						</thead>
 						<tbody>
-						    <tr>
-                                <td>1</td>
-								<td>
-									<img src="../img/g1.jpg">
-								</td>
-								<td>Gundam X</td>
-								<td><span class="type mg">MG</span></td>
-                                <td>1.000.000</td>
-                                <td>100</td>
-							</tr>
+						    <c:forEach items="${lod}" var="lod" varStatus="STT" >
+								<tr>
+	                                <td>${lod.orderId}</td>
+									<td>${lod.customer.userId }</td>
+									<td>${lod.orderDate}</td>
+	                                <td>${lod.voucher.voucherID }</td>
+	                                <td>${lod.sellerID.userId }</td>
+	                                <td>${lod.shipperID.userId }</td>
+	                                <td>${lod.disprice }</td>
+	                                <td>${lod.totalprice }</td>
+	                                <td>${lod.status }</td>
+								</tr>
+							</c:forEach>
 						</tbody>
 					</table>
 				</div>

@@ -3,19 +3,36 @@ package com.webapp3rdyear.dao.impl;
 import com.webapp3rdyear.config.JPAConfig;
 import com.webapp3rdyear.dao.IOrderDao;
 import com.webapp3rdyear.enity.Orders;
+import com.webapp3rdyear.enity.Products;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 
 import java.util.List;
 
 public class OrderDaoImpl implements IOrderDao {
     @Override
     public List<Orders> findByUserId(int userId) {
-        EntityManager enma = JPAConfig.getEntityManager();
-        return enma.createQuery("SELECT od FROM Orders od WHERE od.customer.userId = :userId", Orders.class)
-                .setParameter("userId", userId)
-                .getResultList();
+    	EntityManager enma = JPAConfig.getEntityManager();
+//        String jpql = "SELECT od FROM Orders od WHERE od.customer.userId = :userId";
+//        TypedQuery<Orders> query = enma.createQuery(jpql, Orders.class);
+//        query.setParameter("userId", userId);
+//        try {
+//            return query.getResultList();
+//        } catch (Exception e) {
+//            e.printStackTrace();  // Log the exception for debugging
+//            return null;
+//        }
+        try {
+            return enma.createQuery("SELECT od FROM Orders od WHERE od.customer.userId = :userId", Orders.class)
+                       .setParameter("userId", userId)
+                       .getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();  // Log the exception for debugging
+            return null;  // Return null or empty list depending on your use case
+        }
     }
 
     @Override

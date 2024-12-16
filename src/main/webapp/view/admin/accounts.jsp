@@ -724,14 +724,14 @@ input[type="file"] {
 				<div class="order">
 					<div class="head">
 						<h3>Recent Customers</h3>
-                        <!-- <a href="#" class="btn-download" id="btn-add">
+                        <a href="#" class="btn-download" id="btn-add">
                             <i class='bx bx-plus-circle' ></i>
                             <span class="text">Customer</span>
                         </a>
                         <a href="#" class="btn-download" id="btn-add-category">
                             <i class='bx bx-plus-circle' ></i>
                             <span class="text">Role</span>
-                        </a> -->
+                        </a>
                         
 						<i class='bx bx-search' ></i>
 						<i class='bx bx-filter' ></i>
@@ -760,7 +760,7 @@ input[type="file"] {
 										<c:url value="${list.avatar}" var="imgUrl"></c:url>
 									</c:if>
 									<c:if test="${list.avatar.substring(0,5) != 'https' }">
-										<c:url value="/image?fname=${list.avatar}" var="imgUrl"></c:url>
+										<c:url value="http://localhost:8080/Webapp_3rdYear/image?from=user&fname=${list.avatar}" var="imgUrl"></c:url>
 									</c:if>
 									<td><img height="100" width="100" src="${imgUrl}" /></td>
 									<td>${list.fullname }</td>

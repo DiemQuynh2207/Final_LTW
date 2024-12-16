@@ -140,12 +140,14 @@ public class AdminController extends HttpServlet {
 		else if(url.contains("/admin/product/add")) {
 			//int pid = Integer.parseInt(req.getParameter("productId"));
 			String pname = req.getParameter("pname");
+			System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@1");
 			BigDecimal price = BigDecimal.valueOf(Double.parseDouble(req.getParameter("price")));
 			Long stock = Long.parseLong(req.getParameter("stock"));
 			String des = req.getParameter("description");
 			String image =  Utils.uploadFileImage(req, 1, Utils.generateRandomString(20));
 			int cateid = Integer.parseInt(req.getParameter("categoryId"));
 			int suppid = Integer.parseInt(req.getParameter("supplierId"));
+			System.out.println("############################2");
 			Category cate = new Category();
 			Supplier supp = new Supplier();
 			cate.setCategoryID(cateid);
@@ -153,6 +155,7 @@ public class AdminController extends HttpServlet {
 			Products pr = new Products();
 			pr.setCategoryID(cate);
 			pr.setDescription(des);
+			
 			if (image!=null && image.trim().length()>0) {
 				pr.setImage(image);
 			}
@@ -161,7 +164,7 @@ public class AdminController extends HttpServlet {
 			//pr.setProductId(pid);
 			pr.setStock(stock);
 			pr.setSupplierid(supp);
-			
+			System.out.println("----------------------------------------------------------");
 			ps.insert(pr);
 			System.out.println("hello 2");
 			
