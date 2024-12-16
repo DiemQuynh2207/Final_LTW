@@ -1,6 +1,7 @@
 <%@ page import="com.webapp3rdyear.enity.Cart" %>
 <%@ page import="java.math.BigDecimal" %>
 <%@ page import="java.util.List" %>
+<%@ page import="com.webapp3rdyear.enity.Users" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"%>
     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -59,25 +60,28 @@
                     <div class="left">
                         <h2>Thông tin khách hàng</h2>
                         <form action="" class="form-fill-info" method="POST">
+                            <%
+                                Users user = (Users) request.getAttribute("user");
+                            %>
                             <div class="info-user">
                                 <span>Họ Tên</span>
-                                <input type="text" placeholder="VD: Nguyễn Văn A" name="fullname" disabled value="Nguyễn Thành Đạt">
+                                <input type="text" name="fullname" value="<%= user.getFullname() %>" disabled>
                             </div>
                             <div class="info-user">
                                 <span>Giới tính</span>
-                                <input type="text" placeholder="Nhập giới tính của bạn" name="gender" required>
+                                <input type="text" name="gender" value="<%= user.isGender() == true ? "Nam" : "Nữ" %>" required>
                             </div>
                             <div class="info-user">
                                 <span>Địa chỉ</span>
-                                <input type="text" placeholder="Nhập địa chỉ của bạn" name="address" required>
+                                <input type="text" name="address" value="<%= user.getAddress() != null ? user.getAddress() : "" %>" required>
                             </div>
                             <div class="info-user">
                                 <span>Điện thoại</span>
-                                <input type="text" placeholder="Nhập số điện thoại của bạn" name="phone" required>
+                                <input type="text" name="phone" value="<%= user.getPhone() != null ? user.getPhone() : "" %>" required>
                             </div>
                             <div class="info-user">
                                 <span>Email</span>
-                                <input type="email" placeholder="example@gmail.com" name="fullname" required>
+                                <input type="email" name="email" value="<%= user.getEmail() %>" required>
                             </div>
                             <div class="btn-confirm-info">
                                 <input type="submit" value="Submit">
@@ -93,7 +97,7 @@
                                 <button class="show-number-buy">2</button>
                             </div>
                         </div>
-                        <div class="box-product-buy">
+                        <div class="box-product-buy-container">
                             <%
                                 List<Cart> cartList = (List<Cart>) request.getAttribute("cartList");
                                 BigDecimal totalOfCart = (BigDecimal) request.getAttribute("totalOfCart");
@@ -375,7 +379,16 @@
 		    flex-direction: column;
 		    border: 1px solid black;
 		    border-radius: 10px;
-		}
+        }
+            .box-product-buy-container{
+                width: 100%;
+                height: 250px;
+                display: flex;
+                flex-direction: column;
+                border: 1px solid black;
+                border-radius: 10px;
+                overflow-y: auto; /* Để cuộn nếu nội dung dài */
+            }
 		.detail-product-buy {
 		    display: flex;
 		    flex-direction: row;

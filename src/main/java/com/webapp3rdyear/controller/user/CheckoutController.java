@@ -1,6 +1,7 @@
 package com.webapp3rdyear.controller.user;
 
 import com.webapp3rdyear.enity.Cart;
+import com.webapp3rdyear.enity.Users;
 import com.webapp3rdyear.service.ICartService;
 import com.webapp3rdyear.service.IProductService;
 import com.webapp3rdyear.service.IUserService;
@@ -12,6 +13,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -28,6 +30,8 @@ public class CheckoutController extends HttpServlet {
         String uri = req.getRequestURI();
         List<Cart> cartList = new ArrayList<>();
         BigDecimal total = BigDecimal.ZERO;
+        HttpSession session = req.getSession(false);
+        Users user = (Users) session.getAttribute("user");
         if (uri.contains("/user/checkout")) {
             // Lấy danh sách các ID sản phẩm được chọn từ URL
             String[] selectedProductIds = req.getParameterValues("selectedProductIds");
@@ -44,6 +48,7 @@ public class CheckoutController extends HttpServlet {
         }
         req.setAttribute("cartList", cartList);
         req.setAttribute("totalOfCart", total);
+        req.setAttribute("user", user);
         req.getRequestDispatcher("/view/web/payment-info-user.jsp").forward(req, resp);
     }
 }
