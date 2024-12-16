@@ -17,8 +17,7 @@ public class CartDaoImpl implements ICartDao {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            Cart cart1 = entityManager.merge(cart);
-            entityManager.persist(cart1);
+            entityManager.persist(cart);
             transaction.commit();
         }catch (Exception e) {
             transaction.rollback();

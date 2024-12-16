@@ -1,9 +1,14 @@
 package com.webapp3rdyear.controller.web;
 
+import com.webapp3rdyear.enity.Cart;
 import com.webapp3rdyear.enity.Products;
 import com.webapp3rdyear.enity.Users;
+import com.webapp3rdyear.service.ICartService;
 import com.webapp3rdyear.service.IProductService;
+import com.webapp3rdyear.service.IUserService;
+import com.webapp3rdyear.service.impl.CartServiceImpl;
 import com.webapp3rdyear.service.impl.ProductServiceImpl;
+import com.webapp3rdyear.service.impl.UserServiceImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,14 +20,17 @@ import org.springframework.data.domain.Page;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 
-@WebServlet("/shop")
+@WebServlet(urlPatterns = {"/shop", "/user/cart/add", "/user/cart/dec", "/user/cart/delete"})
 public class ProductController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private IProductService productService;
+    ICartService cartService = new CartServiceImpl();
+    IUserService userService = new UserServiceImpl();
 
     @Override
     public void init() {
@@ -84,6 +92,62 @@ public class ProductController extends HttpServlet {
         request.setAttribute("category", categoryParam);
         request.setAttribute("sortOrder", sortOrder);
 
+//        Bổ sung nội dung bên cart
+        HttpSession session = request.getSession(false);
+        String url = request.getRequestURI();
+        Users user = (Users) session.getAttribute("user");
+
+        List<Cart> cartList = null;
+        if(url.contains("/user/cart/add")){
+            int productId1d = Integer.parseInt(request.getParameter("productId"));
+            Cart cart = cartService.getCartByCustomerIdAndProductId(user.getUserId(), productId1d);
+            Products products = productService.findById(productId1d);
+            if (user == null) {
+                String msg = "You are not logged in";
+                request.setAttribute("msg", msg);
+            }
+            else if (products.getStock() == 0){
+                String msg = "Don't have enough stock";
+                request.setAttribute("msg", msg);
+            }
+            else if (cart == null) {
+                Cart newCart = new Cart(user,products,1);
+                cartService.addCart(newCart);
+            }
+            else {
+                if (cart.getQuantity() == products.getStock()) {
+                    String msg = "Don't have enough stock";
+                    request.setAttribute("msg", msg);
+                }
+                cart.setQuantity(cart.getQuantity() + 1);
+                cartService.updateCart(cart);
+            }
+        }
+        if (url.contains("/user/cart/delete")){
+            int productId1 = Integer.parseInt(request.getParameter("productId"));
+            Cart cart = cartService.getCartByCustomerIdAndProductId(user.getUserId(), productId1);
+            cartService.removeCart(cart);
+        }
+        if (url.contains("/user/cart/dec")){
+            int productId1 = Integer.parseInt(request.getParameter("productId"));
+            Cart cart = cartService.getCartByCustomerIdAndProductId(user.getUserId(), productId1);
+            Users users = userService.findById(1);
+            if (users == null) {
+                String msg = "You are not logged in";
+                request.setAttribute("msg", msg);
+            }
+            else if (cart.getQuantity() == 1){
+                String msg = "Quantity must be greater than 1";
+                request.setAttribute("msg", msg);
+            }
+            else {
+                cart.setQuantity(cart.getQuantity() - 1);
+                cartService.updateCart(cart);
+            }
+        }
+        cartList = cartService.getAllCartsByCustomerId(1);
+
+        request.setAttribute("cartList", cartList);
         request.getRequestDispatcher("/view/web/shop.jsp").forward(request, response);
     }
 
