@@ -1,6 +1,7 @@
 package com.webapp3rdyear.controller.admin;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -8,8 +9,10 @@ import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
 
+import com.webapp3rdyear.enity.Category;
 import com.webapp3rdyear.enity.Products;
 import com.webapp3rdyear.enity.Roles;
+import com.webapp3rdyear.enity.Supplier;
 import com.webapp3rdyear.enity.Users;
 import com.webapp3rdyear.enity.model.ProductModel;
 import com.webapp3rdyear.enity.model.UserModel;
@@ -51,7 +54,22 @@ public class AdminController extends HttpServlet {
 			req.setAttribute("prod", lppm);
 			req.getRequestDispatcher("/view/admin/products.jsp").forward(req, resp);
 		}
-		
+		else if (url.contains("/admin/product/edit")) {
+			int id = Integer.parseInt(req.getParameter("id"));
+			Products p = ps.findById(id);
+			req.setAttribute("pname", p.getPname());
+			req.setAttribute("price", p.getPrice());
+			req.setAttribute("des", p.getDescription());
+			req.setAttribute("stock", p.getStock());
+			req.setAttribute("categoryId", p.getCategoryID().getCategoryID());
+			req.setAttribute("supplierId", p.getSupplierid().getSupplierID());
+			req.setAttribute("id", p.getProductId());
+			String img = p.getImage();
+			if(!img.contains("https://res.cloudinary.com/dfjwzqar8/image/upload/"))
+				img = "http://localhost:8080/Webapp_3rdYear/image&fname=" + p.getImage();
+			req.setAttribute("img", img);
+			req.getRequestDispatcher("/view/admin/products-edit.jsp").forward(req, resp);
+		}
 	}
 
 	@Override
@@ -118,6 +136,70 @@ public class AdminController extends HttpServlet {
 			System.out.println("hello");
 			
 			resp.sendRedirect(req.getContextPath() + "/admin/accounts");
+		}
+		else if(url.contains("/admin/product/add")) {
+			//int pid = Integer.parseInt(req.getParameter("productId"));
+			String pname = req.getParameter("pname");
+			BigDecimal price = BigDecimal.valueOf(Double.parseDouble(req.getParameter("price")));
+			Long stock = Long.parseLong(req.getParameter("stock"));
+			String des = req.getParameter("description");
+			String image =  Utils.uploadFileImage(req, 1, Utils.generateRandomString(20));
+			int cateid = Integer.parseInt(req.getParameter("categoryId"));
+			int suppid = Integer.parseInt(req.getParameter("supplierId"));
+			Category cate = new Category();
+			Supplier supp = new Supplier();
+			cate.setCategoryID(cateid);
+			supp.setSupplierID(suppid);
+			Products pr = new Products();
+			pr.setCategoryID(cate);
+			pr.setDescription(des);
+			if (image!=null && image.trim().length()>0) {
+				pr.setImage(image);
+			}
+			pr.setPname(pname);
+			pr.setPrice(price);
+			//pr.setProductId(pid);
+			pr.setStock(stock);
+			pr.setSupplierid(supp);
+			
+			ps.insert(pr);
+			System.out.println("hello 2");
+			
+			resp.sendRedirect(req.getContextPath() + "/admin/products");
+		}
+		else if(url.contains("/admin/product/edit")) {
+			int id = Integer.parseInt(req.getParameter("productId"));
+			String pname = req.getParameter("pname");
+			BigDecimal price = BigDecimal.valueOf(Double.parseDouble(req.getParameter("price")));
+			Long stock = Long.parseLong(req.getParameter("stock"));
+			String des = req.getParameter("des");
+			String image =  Utils.uploadFileImage(req, 1, Utils.generateRandomString(20));
+			int cateid = Integer.parseInt(req.getParameter("categoryId"));
+			int suppid = Integer.parseInt(req.getParameter("supplierId"));
+			Category cate = new Category();
+			Supplier supp = new Supplier();
+			cate.setCategoryID(cateid);
+			supp.setSupplierID(suppid);
+			Products pr = ps.findById(id);
+			pr.setDescription(des);
+			pr.setCategoryID(cate);
+			if (image!=null && image.trim().length()>0) {
+				pr.setImage(image);
+			}
+			pr.setPname(pname);
+			pr.setPrice(price);
+			//pr.setProductId(pid);
+			pr.setStock(stock);
+			pr.setSupplierid(supp);
+			ps.update(pr);
+			System.out.println("3");
+			resp.sendRedirect(req.getContextPath() + "/admin/products");
+		}
+		else if(url.contains("/admin/product/delete")) {
+			int id = Integer.parseInt(req.getParameter("id")); 
+			ps.delete(id);
+			System.out.println("delete item id:" + id);
+			resp.sendRedirect(req.getContextPath() + "/admin/products");
 		}
 	}
 }

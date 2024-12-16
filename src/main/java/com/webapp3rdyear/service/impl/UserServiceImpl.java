@@ -65,9 +65,12 @@ public class UserServiceImpl implements IUserService{
 	}
 
 	@Override
-	public boolean login(String username, String pass) {
-		// TODO Auto-generated method stub
-		return iud.login(username, pass);
+	public Users login(String username, String password) {
+		Users user = this.get(username);
+		if (user != null && password.equals(user.getAccountpassword())) {
+			return user;
+		}
+		return null;
 	}
 
 	@Override
@@ -80,6 +83,11 @@ public class UserServiceImpl implements IUserService{
 	public int count() {
 		// TODO Auto-generated method stub
 		return iud.count();
+	}
+
+	@Override
+	public Users get(String username) {
+		return iud.findByUserName(username);
 	}
 
 }
