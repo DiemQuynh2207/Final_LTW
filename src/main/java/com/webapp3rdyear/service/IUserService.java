@@ -23,9 +23,11 @@ public interface IUserService {
 	
 	boolean delete(String username);
 		
-	boolean login(String username, String pass);
+	Users login(String username, String pass);
 
 	boolean softDelete(Users users);
 	
 	int count();
+	
+	public Users get(String username);
 }

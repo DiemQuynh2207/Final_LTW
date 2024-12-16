@@ -494,17 +494,38 @@ body {
     border: 1px solid #888;
     width: 50%;
 }
+.modal-content-edit {
+    background-color: #fefefe;
+    margin: auto;
+    margin-left: 300px;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+}
   
   /* The Close Button */
-.close {
+.close-category {
     color: #aaaaaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
 }
   
-.close:hover,
-.close:focus {
+.close-category:hover,
+.close-category:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+.close-edit {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+  
+.close-edit:hover,
+.close-edit:focus {
     color: #000;
     text-decoration: none;
     cursor: pointer;
@@ -648,25 +669,7 @@ input[type="file"] {
                 </a>
             </li>
             <li>
-                <a href="">
-                    <i class='bx bxs-chat' ></i>
-                    <span class="text">Message</span>
-                </a>
-            </li>
-            <li>
-                <a href="">
-                    <i class='bx bxs-group' ></i>
-                    <span class="text">Team</span>
-                </a>
-            </li>
-            <li>
-                <a href="">
-                    <i class='bx bxs-cog' ></i>
-                    <span class="text">Setting</span>
-                </a>
-            </li>
-            <li>
-                <a href="">
+                <a href="/Webapp_3rdYear/logout">
                     <i class='bx bx-log-in' ></i>
                     <span class="text">Log Out</span>
                 </a>
@@ -694,7 +697,7 @@ input[type="file"] {
 				<span class="num">8</span>
 			</a>
 			<a href="#" class="profile">
-				<img src="img/people.png">
+				<img src="${image }">
 			</a>
 		</nav>
 		<!-- NAVBAR -->
@@ -721,14 +724,14 @@ input[type="file"] {
 				<div class="order">
 					<div class="head">
 						<h3>Recent Customers</h3>
-                        <a href="#" class="btn-download" id="btn-add">
+                        <!-- <a href="#" class="btn-download" id="btn-add">
                             <i class='bx bx-plus-circle' ></i>
                             <span class="text">Customer</span>
                         </a>
                         <a href="#" class="btn-download" id="btn-add-category">
                             <i class='bx bx-plus-circle' ></i>
                             <span class="text">Role</span>
-                        </a>
+                        </a> -->
                         
 						<i class='bx bx-search' ></i>
 						<i class='bx bx-filter' ></i>
@@ -746,7 +749,7 @@ input[type="file"] {
                                 <th>Area</th>
                                 <th>Address</th>
                                 <th>Email</th>
-                                <th>Action</th>
+                                <!-- <th>Action</th> -->
 							</tr>
 						</thead>
 						<tbody>
@@ -777,10 +780,10 @@ input[type="file"] {
 	                                <td>${list.area }</td>
 	                                <td>${list.address }</td>
 	                                <td>${list.email }</td>
-	                                <td>
+	                                <!-- <td>
 	                                    <i class='bx bx-edit' id="btn-edit"></i>
 	                                    <i class='bx bx-x-circle'></i>
-	                                </td>
+	                                </td> -->
 								</tr>
 							</c:forEach>
 						</tbody>
@@ -866,7 +869,25 @@ input[type="file"] {
                     </div>
                 </form>
             </div>
+    	</div>
     </div>
+    <div id="myModal-edit" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content-edit">
+        <span class="close-edit">&times;</span>
+            <div class="left-modal-edit">
+            <h2>Thêm Customer</h2>
+                <form action="" class="form-fill-info" method="POST">
+                    <div class="info-product">
+                        <span>Tên Category</span>
+                        <input type="text" placeholder="VD: Real Grade - RG" name="productName" required>
+                    </div>
+                    <div class="btn-confirm-info">
+                        <input type="submit" value="Add">
+                    </div>
+                </form>
+            </div>
+    	</div>
     </div>
     </section>
 	<!-- CONTENT -->
@@ -891,35 +912,6 @@ input[type="file"] {
             sidebar.classList.toggle('hide');
         })
 
-
-        // Get the modal
-        var modal_add = document.getElementById("myModal-add");
-
-
-        // Get the button that opens the modal
-        var btn_add = document.getElementById("btn-add");
-
-
-        // Get the <span> element that closes the modal
-        var span_add = document.getElementsByClassName("close-add")[0];
-
-
-        // When the user clicks the button, open the modal 
-        btn_add.onclick = function() {
-            modal_add.style.display = "block";
-        }
-
-        // When the user clicks on <span> (x), close the modal
-        span_add.onclick = function() {
-            modal_add.style.display = "none";
-        }
-
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function(event) {
-            if (event.target == modal_add) {
-                modal_add.style.display = "none";
-            }
-        }
 
         // Get the modal
         var modal_add_category = document.getElementById("myModal-add-category");

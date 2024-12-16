@@ -40,7 +40,7 @@ public class UserDaoImpl implements IUserDao{
 	public Users findByEmail(String useremail) {
 		EntityManager enma = JPAConfig.getEntityManager();
 		TypedQuery<Users> query = enma.createQuery(
-                "SELECT u FROM User u WHERE u.Email = :useremail",
+                "SELECT u FROM User u WHERE u.email = :useremail",
                 Users.class);
         query.setParameter("useremail", useremail);
         Users user = query.getResultStream().findFirst().orElse(null);
@@ -51,7 +51,7 @@ public class UserDaoImpl implements IUserDao{
 	public Users findByUserName(String username) {
 		EntityManager enma = JPAConfig.getEntityManager();
 		TypedQuery<Users> query = enma.createQuery(
-                "SELECT u FROM Users u WHERE u.UserName = :username",
+                "SELECT u FROM Users u WHERE u.username = :username",
                 Users.class);
         query.setParameter("username", username);
 
@@ -130,7 +130,7 @@ public class UserDaoImpl implements IUserDao{
 	public boolean login(String username, String pass) {
 		EntityManager enma = JPAConfig.getEntityManager();
 		TypedQuery<Users> query = enma.createQuery(
-                "SELECT u FROM Users u WHERE u.UserName = :username AND u.AccountPassword = :password",
+                "SELECT u FROM Users u WHERE u.username = :username AND u.accountpassword = :password",
                 Users.class);
         query.setParameter("username", username);
         query.setParameter("password", pass);

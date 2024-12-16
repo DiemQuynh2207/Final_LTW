@@ -70,7 +70,7 @@
                     <span class="num">8</span>
                 </a>
                 <a href="#" class="profile">
-                    <img src="img/people.png">
+                    <img src="${image }">
                 </a>
             </div>
 		</nav>
@@ -93,48 +93,49 @@
 				</div>
 			</div>
             <div class="form-edit-profile">
-                <form action="edit" class="edit-profile" method="POST">
+                <form action="update" class="edit-profile" method="POST">
                     <div class="left-form">
                         <div class="info-user">
                             <span>Họ Tên</span>
-                            <input type="text" placeholder="VD: Nguyễn Văn A" name="fullname" required>
+                            <input type="text" placeholder="VD: Nguyễn Văn A" name="fullname" value="${fullname }" required>
                         </div>
                         <div class="info-user">
                             <span>Username</span>
-                            <input type="text" placeholder="Nhập giới tính của bạn" name="username" required>
+                            <input type="text" placeholder="Nhập username" name="username" value="${username }" required disabled>
                         </div>
                         <div class="info-user">
                             <span>Địa chỉ</span>
-                            <input type="text" placeholder="Nhập địa chỉ của bạn" name="address" required>
+                            <input type="text" placeholder="Nhập địa chỉ của bạn" name="address" value="${address }" required>
+                        </div>
+                        <div class="info-user">
+                            <span>Khu vực</span>
+                            <input type="text" placeholder="Nhập khu vực" name="area" value="${area }" required>
                         </div>
                         <div class="info-user">
                             <span>Điện thoại</span>
-                            <input type="text" placeholder="Nhập số điện thoại của bạn" name="phone" required>
+                            <input type="text" placeholder="Nhập số điện thoại của bạn" name="phone" value="${phone }" required>
                         </div>
                         <div class="info-user">
                             <span>Email</span>
-                            <input type="email" placeholder="example@gmail.com" name="fullname" required>
+                            <input type="email" placeholder="example@gmail.com" name="email" value="${email }" required>
                         </div>
-                        <div class="info-user">
-                            <span>Password</span>
-                            <input type="password" name="password" required>
+                        <div class="right-form">
+                        <div class="upload-container">
+                            <label for="image-upload" class="upload-label">
+                                <span>Upload Image</span>
+                                <input type="file" id="image-upload" name="image" accept="image/*">
+                            </label>
+                            <div class="preview-container">
+                                <img id="image-preview" src="${image }" alt="Image preview" class="hidden">
+                            </div>
                         </div>
+                    </div>
                         <div class="btn-confirm-info">
                             <input type="submit" value="Submit">
                             <input type="submit" value="Change Password" id="btn-changepassword">
                         </div>
                     </div>
-                    <div class="right-form">
-                        <div class="upload-container">
-                            <label for="image-upload" class="upload-label">
-                                <span>Upload Image</span>
-                                <input type="file" id="image-upload" name="Images" accept="image/*">
-                            </label>
-                            <div class="preview-container">
-                                <img id="image-preview" src="" alt="Image preview" class="hidden">
-                            </div>
-                        </div>
-                    </div>
+                    
                 </form>
             </div>
         </main>
