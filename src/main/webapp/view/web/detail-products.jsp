@@ -74,7 +74,7 @@
                           <ul>
                             <li>
                                 <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" data-name="Layer 2"><path fill="#7D8590" d="m1.5 13v1a.5.5 0 0 0 .3379.4731 18.9718 18.9718 0 0 0 6.1621 1.0269 18.9629 18.9629 0 0 0 6.1621-1.0269.5.5 0 0 0 .3379-.4731v-1a6.5083 6.5083 0 0 0 -4.461-6.1676 3.5 3.5 0 1 0 -4.078 0 6.5083 6.5083 0 0 0 -4.461 6.1676zm4-9a2.5 2.5 0 1 1 2.5 2.5 2.5026 2.5026 0 0 1 -2.5-2.5zm2.5 3.5a5.5066 5.5066 0 0 1 5.5 5.5v.6392a18.08 18.08 0 0 1 -11 0v-.6392a5.5066 5.5066 0 0 1 5.5-5.5z"></path></svg>
-                                <a href="update">My profile</a>
+                                <a href="/Webapp_3rdYear/update">My profile</a>
                             </li>
                             <li>
                                 <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3 7.2C3 6.07989 3 5.51984 3.21799 5.09202C3.40973 4.71569 3.71569 4.40973 4.09202 4.21799C4.51984 4 5.0799 4 6.2 4H17.8C18.9201 4 19.4802 4 19.908 4.21799C20.2843 4.40973 20.5903 4.71569 20.782 5.09202C21 5.51984 21 6.0799 21 7.2V20L17.6757 18.3378C17.4237 18.2118 17.2977 18.1488 17.1656 18.1044C17.0484 18.065 16.9277 18.0365 16.8052 18.0193C16.6672 18 16.5263 18 16.2446 18H6.2C5.07989 18 4.51984 18 4.09202 17.782C3.71569 17.5903 3.40973 17.2843 3.21799 16.908C3 16.4802 3 15.9201 3 14.8V7.2Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
@@ -85,14 +85,6 @@
                             </li>
                           </ul>
                         </div>
-                    </div>
-                </div>
-                <div class="btn">
-                    <div class="btn-login">
-                        <button class="login"><a href="#" class="text-btn">Login</a></button>
-                    </div>
-                    <div class="btn-signup">
-                        <button class="signup"><a href="#" class="text-btn">Sign Up</a></button>
                     </div>
                 </div>
             </div>
@@ -108,13 +100,13 @@
         <div class="product-s1">
             <div class="left-s1">
                 <div class="title">
-                    <h1>Tên sản phẩm</h1>
+                    <h1>${pname }</h1>
                 </div>
                 <div class="left-img-s1">
                     <div class="img-product">
                         <div class="list">
                             <div class="item">
-                                <img src="../img/s1.jpg" alt="">
+                                <img src="${images }" alt="">
                             </div>
                         </div>
                     </div>
@@ -126,7 +118,7 @@
                 
                     <div class="status">
                         <ul class="availabe-items">
-                            <li>97 items available</li>
+                            <li>${stock } items available</li>
                         </ul>
                         <ul class="waiting-items">
                             <li>waiting line</li>
@@ -137,7 +129,7 @@
                     </div>
                     <div class="price">
                         <span class="real-price" style="display: none;">1.500.000 VND</span>
-                        <span class="discount-price">1.000.000 VND</span>
+                        <span class="discount-price">${price }</span>
                         
                         <div class="quantity">
                             <button class="minus" aria-label="Decrease">&minus;</button>
@@ -213,7 +205,7 @@
             	<div class="review-product-s1">
                     <h3>Desciption about this product</h3>
                     <p>Let's read what the experts have to say about this product so you can make the right recommendation</p>
-                    <p class="des-text"></p>
+                    <p class="des-text">${des }</p>
                 </div>
             </div>
         </div>
@@ -465,7 +457,7 @@
 		
 		.action-user .menu-user {
 		  position: absolute;
-		  right: 220px;
+		  right: 50px;
 		  padding: 10px 20px;
 		  background: #fff;
 		  width: 200px;

@@ -22,4 +22,24 @@
     <filter-name>sitemesh</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+  <servlet>
+    <description></description>
+    <display-name>DetailsProductController</display-name>
+    <servlet-name>DetailsProductController</servlet-name>
+    <servlet-class>com.webapp3rdyear.controller.DetailsProductController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DetailsProductController</servlet-name>
+    <url-pattern>/DetailsProductController</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>DownloadController</display-name>
+    <servlet-name>DownloadController</servlet-name>
+    <servlet-class>com.webapp3rdyear.controller.DownloadController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DownloadController</servlet-name>
+    <url-pattern>/DownloadController</url-pattern>
+  </servlet-mapping>
 </web-app>

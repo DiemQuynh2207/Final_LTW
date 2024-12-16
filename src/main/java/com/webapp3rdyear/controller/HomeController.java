@@ -25,11 +25,13 @@ public class HomeController extends HttpServlet {
 		if (session != null && session.getAttribute("user") != null) {
 			Users user = (Users) session.getAttribute("user");
 			session.setAttribute("fullname", user.getFullname());
+			session.setAttribute("id", user.getUserId());
 			session.setAttribute("image", user.getAvatar());
 			session.setAttribute("role", user.getRole().getRoleId());
 			session.setAttribute("image", user.getAvatar());
 			System.out.println("role:"+ user.getRole().getRoleId());
 			System.out.println("fullname:"+user.getFullname());
+			System.out.println("id:"+user.getUserId());
 			System.out.println("session: " +req.getSession());
 				
 			ok = true;

@@ -757,7 +757,7 @@ input[type="file"] {
 										<c:url value="${prod.image}" var="imgUrl"></c:url>
 									</c:if>
 									<c:if test="${prod.image.substring(0,5) != 'https' }">
-										<c:url value="/image?fname=${prod.image}" var="imgUrl"></c:url>
+										<c:url value="http://localhost:8080/Webapp_3rdYear/image?from=product&fname=${prod.image}" var="imgUrl"></c:url>
 									</c:if>
 									<td><img height="100" width="100" src="${imgUrl}" /></td>
 									<td>${prod.categoryID }</td>
@@ -786,7 +786,7 @@ input[type="file"] {
         <div class="left">
             <div class="left-modal">
             <h2>Thêm sản phẩm</h2>
-                <form action="products/add" class="form-fill-info" method="POST" enctype="multipart/form-data">
+                <form action="product/add" class="form-fill-info" method="POST" enctype="multipart/form-data">
                     <!-- <div class="info-product">
                         <span>Product ID</span>
                         <input type="text" placeholder="VD: Gundam RX79" name="productId" required>

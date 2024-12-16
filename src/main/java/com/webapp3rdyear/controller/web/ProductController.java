@@ -1,6 +1,7 @@
 package com.webapp3rdyear.controller.web;
 
 import com.webapp3rdyear.enity.Products;
+import com.webapp3rdyear.enity.Users;
 import com.webapp3rdyear.service.IProductService;
 import com.webapp3rdyear.service.impl.ProductServiceImpl;
 import jakarta.servlet.ServletException;
@@ -8,6 +9,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.data.domain.Page;
 
 import java.io.IOException;
@@ -29,8 +32,8 @@ public class ProductController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         // Lấy các tham số từ request
+    	String productId = request.getParameter("productId");
         String productName = request.getParameter("productName");
         String minPriceParam = request.getParameter("minPrice");
         String maxPriceParam = request.getParameter("maxPrice");

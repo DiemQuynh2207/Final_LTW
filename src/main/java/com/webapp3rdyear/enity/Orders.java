@@ -1,6 +1,7 @@
 package com.webapp3rdyear.enity;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import com.webapp3rdyear.enity.model.OrderStatus;
 
@@ -30,7 +31,7 @@ public class Orders {
     private int orderId;
 
     @Column(name = "OrderDate", columnDefinition = "DATE")
-    private String orderDate;
+    private Date orderDate;
 
     @ManyToOne
     @JoinColumn(name = "CustomerID", referencedColumnName = "UserID")
