@@ -1,6 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="java.net.URLEncoder" %>
+
+
 
     <!DOCTYPE html>
 <html lang="en">
@@ -11,6 +15,7 @@
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/frontend1/img/logo.png">
     <!-- Link css -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/frontend1/css/shop.css">
     <script src="https://code.jquery.com/jquery-2.2.4.js" charset="utf-8"></script>
     
@@ -117,199 +122,121 @@
         </div>
     </section>
     <section class="section-2">
+        <!-- Search Form -->
+        <form action="shop" method="get" class="row row-cols-lg-auto g-3 align-items-center justify-content-center mb-4">
+            <!-- Search by name -->
+            <div class="col-12">
+                <input type="text" id="productName" name="productName" class="form-control"
+                       placeholder="Nhập tên sản phẩm" value="<%= request.getParameter("productName") != null ? request.getParameter("productName") : "" %>">
+            </div>
+
+            <!-- Category radio buttons -->
+            <div class="col-12">
+                <div class="btn-group" role="group" aria-label="Danh mục">
+                    <input type="radio" class="btn-check" id="indoor" name="category" value="Trong nhà"
+                        <%= "Trong nhà".equals(request.getParameter("category")) ? "checked" : "" %>>
+                    <label class="btn btn-outline-primary" for="indoor">Trong nhà</label>
+
+                    <input type="radio" class="btn-check" id="outdoor" name="category" value="Ngoài trời"
+                        <%= "Ngoài trời".equals(request.getParameter("category")) ? "checked" : "" %>>
+                    <label class="btn btn-outline-primary" for="outdoor">Ngoài trời</label>
+
+                    <input type="radio" class="btn-check" id="desktop" name="category" value="Để bàn"
+                        <%= "Để bàn".equals(request.getParameter("category")) ? "checked" : "" %>>
+                    <label class="btn btn-outline-primary" for="desktop">Để bàn</label>
+                </div>
+            </div>
+
+            <!-- Min and Max Price -->
+            <div class="col-12">
+                <input type="number" id="minPrice" name="minPrice" class="form-control" placeholder="Giá từ"
+                       value="<%= request.getParameter("minPrice") != null ? request.getParameter("minPrice") : "" %>">
+            </div>
+            <div class="col-12">
+                <input type="number" id="maxPrice" name="maxPrice" class="form-control" placeholder="Giá đến"
+                       value="<%= request.getParameter("maxPrice") != null ? request.getParameter("maxPrice") : "" %>">
+            </div>
+
+            <div class="col-12">
+                <select id="sortOrder" name="sortOrder" class="form-select">
+                    <option value="nameAsc" <%= "nameAsc".equals(request.getParameter("sortOrder")) ? "selected" : "" %>>Tên (A - Z)</option>
+                    <option value="nameDesc" <%= "nameDesc".equals(request.getParameter("sortOrder")) ? "selected" : "" %>>Tên (Z - A)</option>
+                    <option value="priceAsc" <%= "priceAsc".equals(request.getParameter("sortOrder")) ? "selected" : "" %>>Giá (Thấp đến Cao)</option>
+                    <option value="priceDesc" <%= "priceDesc".equals(request.getParameter("sortOrder")) ? "selected" : "" %>>Giá (Cao đến Thấp)</option>
+                </select>
+            </div>
+
+            <!-- Submit button -->
+            <div class="col-12">
+                <button type="submit" class="btn btn-success">Tìm kiếm</button>
+            </div>
+        </form>
+
+        <c:if test="${not empty errorMessage}">
+            <p class="text-danger text-center">${errorMessage}</p>
+        </c:if>
+
         <div class="main-content-shop" id="main-content-shop">
+            <%
+                org.springframework.data.domain.Page<com.webapp3rdyear.enity.Products> productPage =
+                        (org.springframework.data.domain.Page<com.webapp3rdyear.enity.Products>) request.getAttribute("productPage");
+                if (productPage != null && !productPage.isEmpty()) {
+                    for (com.webapp3rdyear.enity.Products product : productPage.getContent()) {
+            %>
             <div class="card">
                 <div class="card-img-content">
-                    <img src="../img/s1.jpg" alt="" class="card-img">
+                    <img src="<%= product.getImage() %>" alt="<%= product.getPname() %>" class="card-img">
                 </div>
                 <div class="card-info">
-                    <p class="text-title">Product title </p>
+                    <p class="text-title"><%= product.getPname() %></p>
                 </div>
                 <div class="card-footer">
-                <span class="text-title">$499.49</span>
-                <div class="card-button">
-                    <svg class="svg-icon" viewBox="0 0 20 20">
-                    <path d="M17.72,5.011H8.026c-0.271,0-0.49,0.219-0.49,0.489c0,0.271,0.219,0.489,0.49,0.489h8.962l-1.979,4.773H6.763L4.935,5.343C4.926,5.316,4.897,5.309,4.884,5.286c-0.011-0.024,0-0.051-0.017-0.074C4.833,5.166,4.025,4.081,2.33,3.908C2.068,3.883,1.822,4.075,1.795,4.344C1.767,4.612,1.962,4.853,2.231,4.88c1.143,0.118,1.703,0.738,1.808,0.866l1.91,5.661c0.066,0.199,0.252,0.333,0.463,0.333h8.924c0.116,0,0.22-0.053,0.308-0.128c0.027-0.023,0.042-0.048,0.063-0.076c0.026-0.034,0.063-0.058,0.08-0.099l2.384-5.75c0.062-0.151,0.046-0.323-0.045-0.458C18.036,5.092,17.883,5.011,17.72,5.011z"></path>
-                    <path d="M8.251,12.386c-1.023,0-1.856,0.834-1.856,1.856s0.833,1.853,1.856,1.853c1.021,0,1.853-0.83,1.853-1.853S9.273,12.386,8.251,12.386z M8.251,15.116c-0.484,0-0.877-0.393-0.877-0.874c0-0.484,0.394-0.878,0.877-0.878c0.482,0,0.875,0.394,0.875,0.878C9.126,14.724,8.733,15.116,8.251,15.116z"></path>
-                    <path d="M13.972,12.386c-1.022,0-1.855,0.834-1.855,1.856s0.833,1.853,1.855,1.853s1.854-0.83,1.854-1.853S14.994,12.386,13.972,12.386z M13.972,15.116c-0.484,0-0.878-0.393-0.878-0.874c0-0.484,0.394-0.878,0.878-0.878c0.482,0,0.875,0.394,0.875,0.878C14.847,14.724,14.454,15.116,13.972,15.116z"></path>
-                    </svg>
-                </div>
+                    <span class="text-title">$<%= product.getPrice() %></span>
+                    <div class="card-button">
+                        <svg class="svg-icon" viewBox="0 0 20 20">
+                            <path d="M17.72,5.011H8.026c-0.271,0-0.49,0.219-0.49,0.489c0,0.271,0.219,0.489,0.49,0.489h8.962l-1.979,4.773H6.763L4.935,5.343C4.926,5.316,4.897,5.309,4.884,5.286c-0.011-0.024,0-0.051-0.017-0.074C4.833,5.166,4.025,4.081,2.33,3.908C2.068,3.883,1.822,4.075,1.795,4.344C1.767,4.612,1.962,4.853,2.231,4.88c1.143,0.118,1.703,0.738,1.808,0.866l1.91,5.661c0.066,0.199,0.252,0.333,0.463,0.333h8.924c0.116,0,0.22-0.053,0.308-0.128c0.027-0.023,0.042-0.048,0.063-0.076c0.026-0.034,0.063-0.058,0.08-0.099l2.384-5.75c0.062-0.151,0.046-0.323-0.045-0.458C18.036,5.092,17.883,5.011,17.72,5.011z"></path>
+                            <path d="M8.251,12.386c-1.023,0-1.856,0.834-1.856,1.856s0.833,1.853,1.856,1.853c1.021,0,1.853-0.83,1.853-1.853S9.273,12.386,8.251,12.386z M8.251,15.116c-0.484,0-0.877-0.393-0.877-0.874c0-0.484,0.394-0.878,0.877-0.878c0.482,0,0.875,0.394,0.875,0.878C9.126,14.724,8.733,15.116,8.251,15.116z"></path>
+                            <path d="M13.972,12.386c-1.022,0-1.855,0.834-1.855,1.856s0.833,1.853,1.855,1.853s1.854-0.83,1.854-1.853S14.994,12.386,13.972,12.386z M13.972,15.116c-0.484,0-0.878-0.393-0.878-0.874c0-0.484,0.394-0.878,0.878-0.878c0.482,0,0.875,0.394,0.875,0.878C14.847,14.724,14.454,15.116,13.972,15.116z"></path>
+                        </svg>
+                    </div>
                 </div>
             </div>
-            <div class="card">
-                <div class="card-img-content">
-                    <img src="../img/s1.jpg" alt="" class="card-img">
-                </div>
-                <div class="card-info">
-                    <p class="text-title">Product title </p>
-                </div>
-                <div class="card-footer">
-                <span class="text-title">$499.49</span>
-                <div class="card-button">
-                    <svg class="svg-icon" viewBox="0 0 20 20">
-                    <path d="M17.72,5.011H8.026c-0.271,0-0.49,0.219-0.49,0.489c0,0.271,0.219,0.489,0.49,0.489h8.962l-1.979,4.773H6.763L4.935,5.343C4.926,5.316,4.897,5.309,4.884,5.286c-0.011-0.024,0-0.051-0.017-0.074C4.833,5.166,4.025,4.081,2.33,3.908C2.068,3.883,1.822,4.075,1.795,4.344C1.767,4.612,1.962,4.853,2.231,4.88c1.143,0.118,1.703,0.738,1.808,0.866l1.91,5.661c0.066,0.199,0.252,0.333,0.463,0.333h8.924c0.116,0,0.22-0.053,0.308-0.128c0.027-0.023,0.042-0.048,0.063-0.076c0.026-0.034,0.063-0.058,0.08-0.099l2.384-5.75c0.062-0.151,0.046-0.323-0.045-0.458C18.036,5.092,17.883,5.011,17.72,5.011z"></path>
-                    <path d="M8.251,12.386c-1.023,0-1.856,0.834-1.856,1.856s0.833,1.853,1.856,1.853c1.021,0,1.853-0.83,1.853-1.853S9.273,12.386,8.251,12.386z M8.251,15.116c-0.484,0-0.877-0.393-0.877-0.874c0-0.484,0.394-0.878,0.877-0.878c0.482,0,0.875,0.394,0.875,0.878C9.126,14.724,8.733,15.116,8.251,15.116z"></path>
-                    <path d="M13.972,12.386c-1.022,0-1.855,0.834-1.855,1.856s0.833,1.853,1.855,1.853s1.854-0.83,1.854-1.853S14.994,12.386,13.972,12.386z M13.972,15.116c-0.484,0-0.878-0.393-0.878-0.874c0-0.484,0.394-0.878,0.878-0.878c0.482,0,0.875,0.394,0.875,0.878C14.847,14.724,14.454,15.116,13.972,15.116z"></path>
-                    </svg>
-                </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-img-content">
-                    <img src="../img/s1.jpg" alt="" class="card-img">
-                </div>
-                <div class="card-info">
-                    <p class="text-title">Product title </p>
-                </div>
-                <div class="card-footer">
-                <span class="text-title">$499.49</span>
-                <div class="card-button">
-                    <svg class="svg-icon" viewBox="0 0 20 20">
-                    <path d="M17.72,5.011H8.026c-0.271,0-0.49,0.219-0.49,0.489c0,0.271,0.219,0.489,0.49,0.489h8.962l-1.979,4.773H6.763L4.935,5.343C4.926,5.316,4.897,5.309,4.884,5.286c-0.011-0.024,0-0.051-0.017-0.074C4.833,5.166,4.025,4.081,2.33,3.908C2.068,3.883,1.822,4.075,1.795,4.344C1.767,4.612,1.962,4.853,2.231,4.88c1.143,0.118,1.703,0.738,1.808,0.866l1.91,5.661c0.066,0.199,0.252,0.333,0.463,0.333h8.924c0.116,0,0.22-0.053,0.308-0.128c0.027-0.023,0.042-0.048,0.063-0.076c0.026-0.034,0.063-0.058,0.08-0.099l2.384-5.75c0.062-0.151,0.046-0.323-0.045-0.458C18.036,5.092,17.883,5.011,17.72,5.011z"></path>
-                    <path d="M8.251,12.386c-1.023,0-1.856,0.834-1.856,1.856s0.833,1.853,1.856,1.853c1.021,0,1.853-0.83,1.853-1.853S9.273,12.386,8.251,12.386z M8.251,15.116c-0.484,0-0.877-0.393-0.877-0.874c0-0.484,0.394-0.878,0.877-0.878c0.482,0,0.875,0.394,0.875,0.878C9.126,14.724,8.733,15.116,8.251,15.116z"></path>
-                    <path d="M13.972,12.386c-1.022,0-1.855,0.834-1.855,1.856s0.833,1.853,1.855,1.853s1.854-0.83,1.854-1.853S14.994,12.386,13.972,12.386z M13.972,15.116c-0.484,0-0.878-0.393-0.878-0.874c0-0.484,0.394-0.878,0.878-0.878c0.482,0,0.875,0.394,0.875,0.878C14.847,14.724,14.454,15.116,13.972,15.116z"></path>
-                    </svg>
-                </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-img-content">
-                    <img src="../img/s1.jpg" alt="" class="card-img">
-                </div>
-                <div class="card-info">
-                    <p class="text-title">Product title </p>
-                </div>
-                <div class="card-footer">
-                <span class="text-title">$499.49</span>
-                <div class="card-button">
-                    <svg class="svg-icon" viewBox="0 0 20 20">
-                    <path d="M17.72,5.011H8.026c-0.271,0-0.49,0.219-0.49,0.489c0,0.271,0.219,0.489,0.49,0.489h8.962l-1.979,4.773H6.763L4.935,5.343C4.926,5.316,4.897,5.309,4.884,5.286c-0.011-0.024,0-0.051-0.017-0.074C4.833,5.166,4.025,4.081,2.33,3.908C2.068,3.883,1.822,4.075,1.795,4.344C1.767,4.612,1.962,4.853,2.231,4.88c1.143,0.118,1.703,0.738,1.808,0.866l1.91,5.661c0.066,0.199,0.252,0.333,0.463,0.333h8.924c0.116,0,0.22-0.053,0.308-0.128c0.027-0.023,0.042-0.048,0.063-0.076c0.026-0.034,0.063-0.058,0.08-0.099l2.384-5.75c0.062-0.151,0.046-0.323-0.045-0.458C18.036,5.092,17.883,5.011,17.72,5.011z"></path>
-                    <path d="M8.251,12.386c-1.023,0-1.856,0.834-1.856,1.856s0.833,1.853,1.856,1.853c1.021,0,1.853-0.83,1.853-1.853S9.273,12.386,8.251,12.386z M8.251,15.116c-0.484,0-0.877-0.393-0.877-0.874c0-0.484,0.394-0.878,0.877-0.878c0.482,0,0.875,0.394,0.875,0.878C9.126,14.724,8.733,15.116,8.251,15.116z"></path>
-                    <path d="M13.972,12.386c-1.022,0-1.855,0.834-1.855,1.856s0.833,1.853,1.855,1.853s1.854-0.83,1.854-1.853S14.994,12.386,13.972,12.386z M13.972,15.116c-0.484,0-0.878-0.393-0.878-0.874c0-0.484,0.394-0.878,0.878-0.878c0.482,0,0.875,0.394,0.875,0.878C14.847,14.724,14.454,15.116,13.972,15.116z"></path>
-                    </svg>
-                </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-img-content">
-                    <img src="../img/s1.jpg" alt="" class="card-img">
-                </div>
-                <div class="card-info">
-                    <p class="text-title">Product title </p>
-                </div>
-                <div class="card-footer">
-                <span class="text-title">$499.49</span>
-                <div class="card-button">
-                    <svg class="svg-icon" viewBox="0 0 20 20">
-                    <path d="M17.72,5.011H8.026c-0.271,0-0.49,0.219-0.49,0.489c0,0.271,0.219,0.489,0.49,0.489h8.962l-1.979,4.773H6.763L4.935,5.343C4.926,5.316,4.897,5.309,4.884,5.286c-0.011-0.024,0-0.051-0.017-0.074C4.833,5.166,4.025,4.081,2.33,3.908C2.068,3.883,1.822,4.075,1.795,4.344C1.767,4.612,1.962,4.853,2.231,4.88c1.143,0.118,1.703,0.738,1.808,0.866l1.91,5.661c0.066,0.199,0.252,0.333,0.463,0.333h8.924c0.116,0,0.22-0.053,0.308-0.128c0.027-0.023,0.042-0.048,0.063-0.076c0.026-0.034,0.063-0.058,0.08-0.099l2.384-5.75c0.062-0.151,0.046-0.323-0.045-0.458C18.036,5.092,17.883,5.011,17.72,5.011z"></path>
-                    <path d="M8.251,12.386c-1.023,0-1.856,0.834-1.856,1.856s0.833,1.853,1.856,1.853c1.021,0,1.853-0.83,1.853-1.853S9.273,12.386,8.251,12.386z M8.251,15.116c-0.484,0-0.877-0.393-0.877-0.874c0-0.484,0.394-0.878,0.877-0.878c0.482,0,0.875,0.394,0.875,0.878C9.126,14.724,8.733,15.116,8.251,15.116z"></path>
-                    <path d="M13.972,12.386c-1.022,0-1.855,0.834-1.855,1.856s0.833,1.853,1.855,1.853s1.854-0.83,1.854-1.853S14.994,12.386,13.972,12.386z M13.972,15.116c-0.484,0-0.878-0.393-0.878-0.874c0-0.484,0.394-0.878,0.878-0.878c0.482,0,0.875,0.394,0.875,0.878C14.847,14.724,14.454,15.116,13.972,15.116z"></path>
-                    </svg>
-                </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-img-content">
-                    <img src="../img/s1.jpg" alt="" class="card-img">
-                </div>
-                <div class="card-info">
-                    <p class="text-title">Product title </p>
-                </div>
-                <div class="card-footer">
-                <span class="text-title">$499.49</span>
-                <div class="card-button">
-                    <svg class="svg-icon" viewBox="0 0 20 20">
-                    <path d="M17.72,5.011H8.026c-0.271,0-0.49,0.219-0.49,0.489c0,0.271,0.219,0.489,0.49,0.489h8.962l-1.979,4.773H6.763L4.935,5.343C4.926,5.316,4.897,5.309,4.884,5.286c-0.011-0.024,0-0.051-0.017-0.074C4.833,5.166,4.025,4.081,2.33,3.908C2.068,3.883,1.822,4.075,1.795,4.344C1.767,4.612,1.962,4.853,2.231,4.88c1.143,0.118,1.703,0.738,1.808,0.866l1.91,5.661c0.066,0.199,0.252,0.333,0.463,0.333h8.924c0.116,0,0.22-0.053,0.308-0.128c0.027-0.023,0.042-0.048,0.063-0.076c0.026-0.034,0.063-0.058,0.08-0.099l2.384-5.75c0.062-0.151,0.046-0.323-0.045-0.458C18.036,5.092,17.883,5.011,17.72,5.011z"></path>
-                    <path d="M8.251,12.386c-1.023,0-1.856,0.834-1.856,1.856s0.833,1.853,1.856,1.853c1.021,0,1.853-0.83,1.853-1.853S9.273,12.386,8.251,12.386z M8.251,15.116c-0.484,0-0.877-0.393-0.877-0.874c0-0.484,0.394-0.878,0.877-0.878c0.482,0,0.875,0.394,0.875,0.878C9.126,14.724,8.733,15.116,8.251,15.116z"></path>
-                    <path d="M13.972,12.386c-1.022,0-1.855,0.834-1.855,1.856s0.833,1.853,1.855,1.853s1.854-0.83,1.854-1.853S14.994,12.386,13.972,12.386z M13.972,15.116c-0.484,0-0.878-0.393-0.878-0.874c0-0.484,0.394-0.878,0.878-0.878c0.482,0,0.875,0.394,0.875,0.878C14.847,14.724,14.454,15.116,13.972,15.116z"></path>
-                    </svg>
-                </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-img-content">
-                    <img src="../img/s1.jpg" alt="" class="card-img">
-                </div>
-                <div class="card-info">
-                    <p class="text-title">Product title </p>
-                </div>
-                <div class="card-footer">
-                <span class="text-title">$499.49</span>
-                <div class="card-button">
-                    <svg class="svg-icon" viewBox="0 0 20 20">
-                    <path d="M17.72,5.011H8.026c-0.271,0-0.49,0.219-0.49,0.489c0,0.271,0.219,0.489,0.49,0.489h8.962l-1.979,4.773H6.763L4.935,5.343C4.926,5.316,4.897,5.309,4.884,5.286c-0.011-0.024,0-0.051-0.017-0.074C4.833,5.166,4.025,4.081,2.33,3.908C2.068,3.883,1.822,4.075,1.795,4.344C1.767,4.612,1.962,4.853,2.231,4.88c1.143,0.118,1.703,0.738,1.808,0.866l1.91,5.661c0.066,0.199,0.252,0.333,0.463,0.333h8.924c0.116,0,0.22-0.053,0.308-0.128c0.027-0.023,0.042-0.048,0.063-0.076c0.026-0.034,0.063-0.058,0.08-0.099l2.384-5.75c0.062-0.151,0.046-0.323-0.045-0.458C18.036,5.092,17.883,5.011,17.72,5.011z"></path>
-                    <path d="M8.251,12.386c-1.023,0-1.856,0.834-1.856,1.856s0.833,1.853,1.856,1.853c1.021,0,1.853-0.83,1.853-1.853S9.273,12.386,8.251,12.386z M8.251,15.116c-0.484,0-0.877-0.393-0.877-0.874c0-0.484,0.394-0.878,0.877-0.878c0.482,0,0.875,0.394,0.875,0.878C9.126,14.724,8.733,15.116,8.251,15.116z"></path>
-                    <path d="M13.972,12.386c-1.022,0-1.855,0.834-1.855,1.856s0.833,1.853,1.855,1.853s1.854-0.83,1.854-1.853S14.994,12.386,13.972,12.386z M13.972,15.116c-0.484,0-0.878-0.393-0.878-0.874c0-0.484,0.394-0.878,0.878-0.878c0.482,0,0.875,0.394,0.875,0.878C14.847,14.724,14.454,15.116,13.972,15.116z"></path>
-                    </svg>
-                </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-img-content">
-                    <img src="../img/s1.jpg" alt="" class="card-img">
-                </div>
-                <div class="card-info">
-                    <p class="text-title">Product title </p>
-                </div>
-                <div class="card-footer">
-                <span class="text-title">$499.49</span>
-                <div class="card-button">
-                    <svg class="svg-icon" viewBox="0 0 20 20">
-                    <path d="M17.72,5.011H8.026c-0.271,0-0.49,0.219-0.49,0.489c0,0.271,0.219,0.489,0.49,0.489h8.962l-1.979,4.773H6.763L4.935,5.343C4.926,5.316,4.897,5.309,4.884,5.286c-0.011-0.024,0-0.051-0.017-0.074C4.833,5.166,4.025,4.081,2.33,3.908C2.068,3.883,1.822,4.075,1.795,4.344C1.767,4.612,1.962,4.853,2.231,4.88c1.143,0.118,1.703,0.738,1.808,0.866l1.91,5.661c0.066,0.199,0.252,0.333,0.463,0.333h8.924c0.116,0,0.22-0.053,0.308-0.128c0.027-0.023,0.042-0.048,0.063-0.076c0.026-0.034,0.063-0.058,0.08-0.099l2.384-5.75c0.062-0.151,0.046-0.323-0.045-0.458C18.036,5.092,17.883,5.011,17.72,5.011z"></path>
-                    <path d="M8.251,12.386c-1.023,0-1.856,0.834-1.856,1.856s0.833,1.853,1.856,1.853c1.021,0,1.853-0.83,1.853-1.853S9.273,12.386,8.251,12.386z M8.251,15.116c-0.484,0-0.877-0.393-0.877-0.874c0-0.484,0.394-0.878,0.877-0.878c0.482,0,0.875,0.394,0.875,0.878C9.126,14.724,8.733,15.116,8.251,15.116z"></path>
-                    <path d="M13.972,12.386c-1.022,0-1.855,0.834-1.855,1.856s0.833,1.853,1.855,1.853s1.854-0.83,1.854-1.853S14.994,12.386,13.972,12.386z M13.972,15.116c-0.484,0-0.878-0.393-0.878-0.874c0-0.484,0.394-0.878,0.878-0.878c0.482,0,0.875,0.394,0.875,0.878C14.847,14.724,14.454,15.116,13.972,15.116z"></path>
-                    </svg>
-                </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-img-content">
-                    <img src="../img/s1.jpg" alt="" class="card-img">
-                </div>
-                <div class="card-info">
-                    <p class="text-title">Product title </p>
-                </div>
-                <div class="card-footer">
-                <span class="text-title">$499.49</span>
-                <div class="card-button">
-                    <svg class="svg-icon" viewBox="0 0 20 20">
-                    <path d="M17.72,5.011H8.026c-0.271,0-0.49,0.219-0.49,0.489c0,0.271,0.219,0.489,0.49,0.489h8.962l-1.979,4.773H6.763L4.935,5.343C4.926,5.316,4.897,5.309,4.884,5.286c-0.011-0.024,0-0.051-0.017-0.074C4.833,5.166,4.025,4.081,2.33,3.908C2.068,3.883,1.822,4.075,1.795,4.344C1.767,4.612,1.962,4.853,2.231,4.88c1.143,0.118,1.703,0.738,1.808,0.866l1.91,5.661c0.066,0.199,0.252,0.333,0.463,0.333h8.924c0.116,0,0.22-0.053,0.308-0.128c0.027-0.023,0.042-0.048,0.063-0.076c0.026-0.034,0.063-0.058,0.08-0.099l2.384-5.75c0.062-0.151,0.046-0.323-0.045-0.458C18.036,5.092,17.883,5.011,17.72,5.011z"></path>
-                    <path d="M8.251,12.386c-1.023,0-1.856,0.834-1.856,1.856s0.833,1.853,1.856,1.853c1.021,0,1.853-0.83,1.853-1.853S9.273,12.386,8.251,12.386z M8.251,15.116c-0.484,0-0.877-0.393-0.877-0.874c0-0.484,0.394-0.878,0.877-0.878c0.482,0,0.875,0.394,0.875,0.878C9.126,14.724,8.733,15.116,8.251,15.116z"></path>
-                    <path d="M13.972,12.386c-1.022,0-1.855,0.834-1.855,1.856s0.833,1.853,1.855,1.853s1.854-0.83,1.854-1.853S14.994,12.386,13.972,12.386z M13.972,15.116c-0.484,0-0.878-0.393-0.878-0.874c0-0.484,0.394-0.878,0.878-0.878c0.482,0,0.875,0.394,0.875,0.878C14.847,14.724,14.454,15.116,13.972,15.116z"></path>
-                    </svg>
-                </div>
-                </div>
-            </div><div class="card">
-                <div class="card-img-content">
-                    <img src="../img/s1.jpg" alt="" class="card-img">
-                </div>
-                <div class="card-info">
-                    <p class="text-title">Product title </p>
-                </div>
-                <div class="card-footer">
-                <span class="text-title">$499.49</span>
-                <div class="card-button">
-                    <svg class="svg-icon" viewBox="0 0 20 20">
-                    <path d="M17.72,5.011H8.026c-0.271,0-0.49,0.219-0.49,0.489c0,0.271,0.219,0.489,0.49,0.489h8.962l-1.979,4.773H6.763L4.935,5.343C4.926,5.316,4.897,5.309,4.884,5.286c-0.011-0.024,0-0.051-0.017-0.074C4.833,5.166,4.025,4.081,2.33,3.908C2.068,3.883,1.822,4.075,1.795,4.344C1.767,4.612,1.962,4.853,2.231,4.88c1.143,0.118,1.703,0.738,1.808,0.866l1.91,5.661c0.066,0.199,0.252,0.333,0.463,0.333h8.924c0.116,0,0.22-0.053,0.308-0.128c0.027-0.023,0.042-0.048,0.063-0.076c0.026-0.034,0.063-0.058,0.08-0.099l2.384-5.75c0.062-0.151,0.046-0.323-0.045-0.458C18.036,5.092,17.883,5.011,17.72,5.011z"></path>
-                    <path d="M8.251,12.386c-1.023,0-1.856,0.834-1.856,1.856s0.833,1.853,1.856,1.853c1.021,0,1.853-0.83,1.853-1.853S9.273,12.386,8.251,12.386z M8.251,15.116c-0.484,0-0.877-0.393-0.877-0.874c0-0.484,0.394-0.878,0.877-0.878c0.482,0,0.875,0.394,0.875,0.878C9.126,14.724,8.733,15.116,8.251,15.116z"></path>
-                    <path d="M13.972,12.386c-1.022,0-1.855,0.834-1.855,1.856s0.833,1.853,1.855,1.853s1.854-0.83,1.854-1.853S14.994,12.386,13.972,12.386z M13.972,15.116c-0.484,0-0.878-0.393-0.878-0.874c0-0.484,0.394-0.878,0.878-0.878c0.482,0,0.875,0.394,0.875,0.878C14.847,14.724,14.454,15.116,13.972,15.116z"></path>
-                    </svg>
-                </div>
-                </div>
-            </div>
-            
+            <%
+                }
+            } else {
+            %>
+            <p class="text-center text-muted">Không tìm thấy sản phẩm nào.</p>
+            <% } %>
         </div>
+
+
         <div class="pagination">
-            <a href="#">&laquo;</a>
-            <a href="#">1</a>
-            <a class="active" href="#">2</a>
-            <a href="#">3</a>
-            <a href="#">4</a>
-            <a href="#">5</a>
-            <a href="#">6</a>
-            <a href="#">&raquo;</a>
+            <%
+                int currentPage = (int) request.getAttribute("currentPage");
+                int totalPages = productPage.getTotalPages();
+
+                // Build base URL without 'page' parameter
+                String queryString = request.getQueryString();
+                String baseURL = "shop?";
+                if (queryString != null) {
+                    baseURL += queryString.replaceAll("page=\\d+", "").replaceAll("&$", "");
+                }
+                if (baseURL.contains("?") && !baseURL.endsWith("&")) {
+                    baseURL += "&";
+                }
+            %>
+            <% if (currentPage > 0) { %>
+            <a href="<%= baseURL + "page=" + (currentPage - 1) %>">&laquo;</a>
+            <% } %>
+            <% for (int i = 0; i < totalPages; i++) { %>
+            <a href="<%= baseURL + "page=" + i %>" class="<%= (i == currentPage) ? "active" : "" %>"><%= i + 1 %></a>
+            <% } %>
+            <% if (currentPage < totalPages - 1) { %>
+            <a href="<%= baseURL + "page=" + (currentPage + 1) %>">&raquo;</a>
+            <% } %>
         </div>
     </section>
+
 
     <div id="myModal-add" class="modal">
         <!-- Modal content -->
@@ -1386,7 +1313,7 @@ input[type="file"] {
     	  toggleMenu.classList.toggle("active");
     	}
 
-    	let btn_appear = document.getElementById('btn-user-action') 
+    	let btn_appear = document.getElementById('btn-user-action')
     	let profile_user = document.getElementById('profile-user')
     	let username=""
     	function checkLogin(){
@@ -1518,7 +1445,7 @@ input[type="file"] {
     	//   }
     	// })();
 
-    	 
+
     	let main_content_shop = document.getElementById('main-content-shop')
     	async function loadProduct() {
     	  const response = await fetch('../html/test.json');
@@ -1603,5 +1530,6 @@ input[type="file"] {
 
 
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

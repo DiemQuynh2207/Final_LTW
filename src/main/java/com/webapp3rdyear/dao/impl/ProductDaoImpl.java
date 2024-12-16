@@ -12,10 +12,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -137,15 +134,18 @@ public class ProductDaoImpl implements IProductDao{
 	}
 
 	@Override
-	public Page<Products> filterProducts(String pname, BigDecimal minPrice, BigDecimal maxPrice, Integer categoryId, String sortByName, String sortByPrice, int page, int size) {
+	public Page<Products> filterProducts(String pname, BigDecimal minPrice, BigDecimal maxPrice, Integer categoryId,
+										 String sortByName, String sortByPrice, int page, int size) {
 		EntityManager enma = JPAConfig.getEntityManager();
-
 		CriteriaBuilder cb = enma.getCriteriaBuilder();
+
+		// Main Query for fetching products
 		CriteriaQuery<Products> cq = cb.createQuery(Products.class);
 		Root<Products> productRoot = cq.from(Products.class);
 
 		List<Predicate> predicates = new ArrayList<>();
 
+		// Filtering conditions
 		if (pname != null && !pname.isEmpty()) {
 			predicates.add(cb.like(productRoot.get("pname"), "%" + pname + "%"));
 		}
@@ -161,37 +161,38 @@ public class ProductDaoImpl implements IProductDao{
 
 		cq.where(predicates.toArray(new Predicate[0]));
 
-		if ("asc".equals(sortByPrice)) {
-			cq.orderBy(cb.asc(productRoot.get("price")));
-		} else if ("desc".equals(sortByPrice)) {
-			cq.orderBy(cb.desc(productRoot.get("price")));
+		// Sorting conditions
+		List<Order> orders = new ArrayList<>();
+		if ("ASC".equalsIgnoreCase(sortByPrice)) {
+			orders.add(cb.asc(productRoot.get("price")));
+		} else if ("DESC".equalsIgnoreCase(sortByPrice)) {
+			orders.add(cb.desc(productRoot.get("price")));
 		}
 
-		if ("asc".equals(sortByName)) {
-			cq.orderBy(cb.asc(productRoot.get("pname")));
-		} else if ("desc".equals(sortByName)) {
-			cq.orderBy(cb.desc(productRoot.get("pname")));
+		if ("ASC".equalsIgnoreCase(sortByName)) {
+			orders.add(cb.asc(productRoot.get("pname")));
+		} else if ("DESC".equalsIgnoreCase(sortByName)) {
+			orders.add(cb.desc(productRoot.get("pname")));
 		}
 
+		cq.orderBy(orders);
+
+		// Execute main query
 		Query query = enma.createQuery(cq);
-
 		query.setFirstResult(page * size);
 		query.setMaxResults(size);
-
 		List<Products> products = query.getResultList();
 
+		// Count Query
 		CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
 		Root<Products> countRoot = countQuery.from(Products.class);
 		countQuery.select(cb.count(countRoot));
+		countQuery.where(predicates.toArray(new Predicate[0]));
 
-		Query countQ = enma.createQuery(countQuery);
-		long totalRecords = (long) countQ.getSingleResult();
-
+		Long totalRecords = enma.createQuery(countQuery).getSingleResult();
 		enma.close();
 
 		return new PageImpl<>(products, PageRequest.of(page, size), totalRecords);
-
 	}
-
 
 }
